@@ -24,7 +24,7 @@ password:string;
 verifyCode:string;
 verifyCodeExpiry:Date;
 isVerified:boolean;
-isAccesptingMessage:boolean;
+isAcceptingMessage:boolean;
 messages:Message[]
 
 }
@@ -60,7 +60,7 @@ const UserSchema:Schema<User>=new Schema({
         type:Boolean,
        depault:false
     },
-    isAccesptingMessage:{
+    isAcceptingMessage:{
         type:Boolean,
         depault:true
     },

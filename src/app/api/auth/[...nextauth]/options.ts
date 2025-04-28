@@ -1,4 +1,7 @@
 import {NextAuthOptions} from "next-auth";
+
+// Extend the User type to include custom properties
+
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
@@ -43,12 +46,27 @@ export const authOptions:NextAuthOptions={
         })
     ],
     callbacks: { 
+        async jwt({ token, user }) {
+            if(user){
+                token._id=user._id?.toString();
+                token.isVerified=user.isVerified;
+                token.isAcceptingMessage=user.isAcceptingMessage;
+                token.username=user.username
+    
+            }
+            return token
+        },
     async session({ session, token }) {
+        if(token){
+            session.user._id = token._id;
+            session.user.isVerified=token.isVerified;
+            session.user.isAcceptingMessage = token.isAcceptingMessages;
+            session.user.username = token.username
+
+        }
         return session
     },
-    async jwt({ token, user }) {
-        return token
-    },
+   
     },
     pages:{
         signIn:'/sign-in'
