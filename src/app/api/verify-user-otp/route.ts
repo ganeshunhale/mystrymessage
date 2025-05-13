@@ -14,7 +14,7 @@ export async function POST(request:NextRequest){
         if(!user){
             return NextResponse.json({success:false,message:"user is not found"},{status:400})
         }
-        const isCodeValid = user.verifyCode != code
+        const isCodeValid = user.verifyCode == code
         const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date()
         if(!isCodeValid){
             return NextResponse.json({success:false,message:"Incorrect verification code"},{status:400})

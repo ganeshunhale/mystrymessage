@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from 'lucide-react';
 import Link from "next/link"
+import Error from "next/error"
 const page =()=>{
   const [username,setUsername]= useState('')
   const [usernameMessage, setUsernameMessage] = useState('')
@@ -61,6 +62,9 @@ const page =()=>{
   const onSubmit = async (data : z.infer<typeof signupSchema>) =>{
     setIsSubmitting(true)
     try {
+      if(usernameMessage!="User name is available"){
+        throw Error
+      }
       const response = await axios.post<ApiResponse>('/api/sign-up',data)
       toast('Success',{description:response.data.message})
       router.replace(`verify/${username}`)
