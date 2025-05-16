@@ -2,7 +2,9 @@ import {z} from "zod"
 
 export const signInSchema = z.object(
     {
-        identifier: z.string().length(6,"verification code must be 6 digits"),
+        identifier: z
+        .string()
+        .min(1, { message: "This field has to be filled." }),
         password:z.string()
     }
 )

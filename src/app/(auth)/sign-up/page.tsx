@@ -34,7 +34,7 @@ const page =()=>{
   })
 
   useEffect(() => {
-    ( async () => {
+    const fetchSearchResults = async () => {
     console.log(username);
 
       if(username){
@@ -56,7 +56,9 @@ const page =()=>{
           setISChekingUsername(false)
         }
       }
-    })()
+    }
+    const timeoutId= setTimeout(fetchSearchResults,300)
+    return ()=>clearTimeout(timeoutId)
   }, [username])
 
   const onSubmit = async (data : z.infer<typeof signupSchema>) =>{
