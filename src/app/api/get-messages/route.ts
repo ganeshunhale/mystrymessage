@@ -1,17 +1,16 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/user";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { authOptions } from "../auth/[...nextauth]/options";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     await dbConnect()
 
     const session = await getServerSession(authOptions)
     const user = session?.user
-
-    if (!session || !session.expires) {
+    if (!session || !user?._id) {
         return Response.json(
             {
                 success: false,
@@ -21,6 +20,7 @@ export async function GET(request: Request) {
         )
     }
     const userId = new mongoose.Types.ObjectId(user?._id)
+    
     try {
         const user = await UserModel.aggregate([
             { $match: { _id: userId } },
@@ -34,8 +34,10 @@ export async function GET(request: Request) {
                 {status: 404}
             )
         }
+        console.log({user});
+        
         return NextResponse.json(
-            {success: true,message: "User messages successfully fetched",messages:user[0].messages},
+            {success: true,message: "User messages successfully fetched",messages:user.length?user?.[0].messages:null},
             {status: 200}
         )
     } catch (error) {

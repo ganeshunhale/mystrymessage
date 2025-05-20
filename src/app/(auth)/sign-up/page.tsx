@@ -35,18 +35,13 @@ const page =()=>{
 
   useEffect(() => {
     const fetchSearchResults = async () => {
-    console.log(username);
-
       if(username){
         setISChekingUsername(true)
         setUsernameMessage('')
         try {
           const response = await axios.get('/api/check-username-unique',{params:{username:username}})
           setUsernameMessage(response.data.message)
-          console.log(response);
-          
         } catch (error) {
-          console.log(error);
           const axiosError= error as AxiosError<ApiResponse>
 
           setUsernameMessage(axiosError.response?.data.message??'Error while checking username')

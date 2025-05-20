@@ -9,8 +9,7 @@ export async function POST(request:NextRequest){
 
     const session = await getServerSession(authOptions)
     const user = session?.user
-
-    if(!session||!session.expires){
+    if(!session || !user?._id){
         return Response.json(
             {
                 success:false,
@@ -21,8 +20,10 @@ export async function POST(request:NextRequest){
     }
     const userId = user?._id
     const {acceptMessages} = await request.json()
+
+    
     try {
-        const updatedUser = UserModel.findByIdAndUpdate(userId,
+        const updatedUser = await UserModel.findByIdAndUpdate(userId,
             {isAcceptingMessage:acceptMessages},{new:true})
         
             if(!updatedUser){
@@ -44,7 +45,7 @@ export async function GET(request:NextRequest){
     const session = await getServerSession(authOptions)
     const user = session?.user
 
-    if(!session||!session.expires){
+    if(!session||!user?._id){
         return Response.json(
             {
                 success:false,

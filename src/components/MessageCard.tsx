@@ -28,11 +28,11 @@ import { toast } from 'sonner'
     OnMessageDelete :(messageId:string)=>void
 
   }
-const MessageCard = ({message,OnMessageDelete}:MessageCardProps) => {
+export const MessageCard = ({message,OnMessageDelete}:MessageCardProps) => {
     const handleDeleteConfirm = async()=>{
         const responce = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`)
         toast.message(responce.data.message||'Message has been Deleted')
-
+        OnMessageDelete(message._id)
     }
     return (
         <Card>
@@ -65,5 +65,3 @@ const MessageCard = ({message,OnMessageDelete}:MessageCardProps) => {
         </Card>
     )
 }
-
-export default MessageCard
