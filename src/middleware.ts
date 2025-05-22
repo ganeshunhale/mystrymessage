@@ -1,31 +1,37 @@
 import { getToken } from 'next-auth/jwt'
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-export {default} from "next-auth/middleware"
-// This function can be marked `async` if using `await` inside
-export async function middleware(request: NextRequest) {
-    const token = await getToken({req:request})
-    const url = request.nextUrl
-    if(token && ( url.pathname.startsWith('/sign-in') ||
-                  url.pathname.startsWith('/sign-up') ||
-                  url.pathname.startsWith('/verify')||
-                  url.pathname.startsWith('/'))
-    ){
-        return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
-//   return NextResponse.redirect(new URL('/home', request.url))
 
-if(!token && url.pathname.startsWith('/dashboard')){
-    return NextResponse.redirect(new URL('/sign-in',request.url))
+export { default } from 'next-auth/middleware'
+
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request })
+  const url = request.nextUrl
+
+  const isAuthPage =
+    url.pathname.startsWith('/sign-in') ||
+    url.pathname.startsWith('/sign-up') ||
+    url.pathname.startsWith('/verify')
+
+  const isDashboard = url.pathname.startsWith('/dashboard')
+
+  // ✅ If logged in and on auth page, redirect to dashboard
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // ✅ If not logged in and on protected dashboard page, redirect to login
+  if (!token && isDashboard) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+
+  return NextResponse.next()
 }
-return NextResponse.next()
-}
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/sign-in',
-            '/sign-up',
-            '/',
-            '/dashboard/:path*',
-            '/verify/:path*'
-        ],
-}
+    matcher: [
+      '/sign-in',
+      '/sign-up',
+      '/verify/:path*',
+      '/dashboard/:path*'
+    ]
+  }

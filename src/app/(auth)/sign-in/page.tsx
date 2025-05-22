@@ -44,6 +44,7 @@ const page = () => {
       //   throw Error
       // }
       const response = await signIn('credentials', {
+        
         redirect: false, identifier: data.identifier,
         password: data.password
       })
